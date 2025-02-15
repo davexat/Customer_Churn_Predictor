@@ -12,6 +12,13 @@ dependencies:
   - pip
   - pyprojroot
   - python=3.9
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - xgboost
+  - scipy
+  - joblib
   - pip:
     - pyhere
-    
