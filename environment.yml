@@ -20,5 +20,6 @@ dependencies:
   - xgboost
   - scipy
   - joblib
+  - ipykernel
   - pip:
     - pyhere
