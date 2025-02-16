@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "churn_predictor"
+version = "0.1.0"
+authors = [
+  { name = "David Sandoval", email = "daelsand@espol.edu.ec" }
+]
+description = "A customer churn prediction project"
+readme = "README.md"
+requires-python = ">=3"
+
+[tool.setuptools.packages.find]
+where = ["."]
