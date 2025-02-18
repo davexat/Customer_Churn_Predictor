@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import numpy as np
 
 def plot_horizontal_boxplot(df, columns):
     """
@@ -138,6 +139,44 @@ def plot_bar_charts(df, columns):
     plt.show()
 
 # Usage example: plot_bar_charts(df, ['column1', 'column2'])
+
+def plot_correlation_heatmap(df):
+    """
+    Plot a customized correlation heatmap showing only unique correlations
+    based on a non-redundant triangular approach.
+    
+    Parameters:
+        df (pd.DataFrame): The DataFrame containing the data to compute correlations.
+    
+    Returns:
+        None
+    """
+    # Calculate correlation matrix
+    corr = df.corr()
+
+    # Get the number of columns
+    n = len(corr.columns)
+
+    # Create a mask for the upper triangular matrix
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+
+    # Set up the matplotlib figure
+    plt.figure(figsize=(6, 6))
+
+    # Plot the heatmap
+    sns.heatmap(corr.iloc[1:, :-1], mask=mask[1:, :-1], annot=True, cmap='coolwarm', 
+                vmin=-1, vmax=1, fmt='.2f', linewidths=0.5, square=True, cbar_kws={"shrink": 0.75})
+
+    # Add titles and labels
+    plt.title('Correlation Heatmap')
+    plt.xlabel('Variables (1 to N-1)')
+    plt.ylabel('Variables (N to 2)')
+    
+    # Display the plot
+    plt.show()
+
+# Example usage:
+# plot_custom_correlation_heatmap(df_cleaned)
 
 
     
