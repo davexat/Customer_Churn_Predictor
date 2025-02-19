@@ -177,48 +177,77 @@ def plot_correlation_heatmap(df):
 
 # Usage example: plot_custom_correlation_heatmap(df_cleaned)
 
-def plot_pairplot(df, columns=None, hue=None):
+def plot_pairplot(df, columns=None, hue=None, corner=False):
     """
-    Creates a pairplot showing relationships between variables with optional color coding.
+    Plot a pairplot to visualize relationships between numerical variables using scatterplots
+    for each combination of columns. Supports both numerical and categorical hue variables.
     
     Parameters:
-    df (pd.DataFrame): DataFrame containing the data
-    columns (list, optional): Columns to include in the plot. Uses numerical columns if None
-    hue (str, optional): Column name for color coding the points
-    """
-    # Select data columns
-    data = df[columns].copy() if columns else df.select_dtypes(include=['number']).copy()
+    df (pd.DataFrame): The DataFrame containing the data to plot.
+    columns (list, optional): List of column names to include in the pairplot.
+                            If None, all numerical columns will be used.
+    hue (str, optional): Column name to use for color-coding points.
+                        Can be either numerical or categorical.
     
-    # Add hue column if specified
+    Returns:
+    None
+    """
+    # Filter the DataFrame to include only the specified columns or default to all numerical columns
+    if columns:
+        plot_df = df[columns].copy()
+    else:
+        plot_df = df.select_dtypes(include=['number']).copy()
+    
+    # Handle hue parameter
     if hue:
         if hue not in df.columns:
             raise ValueError(f"Hue column '{hue}' not found in DataFrame")
         
-        # Handle categorical hue with custom colors
+        # Add hue column to plot_df if it's not already included
+        if hue not in plot_df.columns:
+            plot_df[hue] = df[hue]
+        
+        # Handle categorical hue
         if df[hue].dtype == 'object' or pd.api.types.is_categorical_dtype(df[hue]):
-            palette = sns.color_palette("husl", len(df[hue].unique()))
-        else:
-            palette = None
+            # Convert categorical hue to numeric codes for proper plotting
+            plot_df[hue] = pd.Categorical(plot_df[hue]).codes
             
-        data[hue] = df[hue]
+            # Create custom palette and legend
+            unique_categories = df[hue].unique()
+            n_colors = len(unique_categories)
+            palette = sns.color_palette("husl", n_colors)
+            
+            # Create the pairplot
+            g = sns.pairplot(plot_df, 
+                             hue=hue,
+                           diag_kind='kde',
+                           plot_kws={'alpha': 0.6},
+                            corner = corner,
+                           palette=palette)
+            
+            # Update legend with original category names
+            new_labels = [str(cat) for cat in unique_categories]
+            legend = g._legend
+            for t, label in zip(legend.get_texts(), new_labels):
+                t.set_text(label)
+        
+        else:
+            # For numerical hue, use default behavior
+            g = sns.pairplot(plot_df,
+                           hue=hue,
+                           diag_kind='kde',
+                             corner = corner,
+                           plot_kws={'alpha': 0.6})
     else:
-        palette = None
+        # No hue specified
+        g = sns.pairplot(plot_df,
+                        diag_kind='kde',
+                         corner = corner,
+                        plot_kws={'alpha': 0.6})
+    if hue:
+        g.fig.subplots_adjust(right=0.95, top=1)
     
-    # Create pairplot
-    g = sns.pairplot(
-        data=data,
-        hue=hue,
-        palette=palette,
-        diag_kind='hist',
-        plot_kws={'alpha': 0.5}
-    )
-    
-    # Adjust layout
-    g.fig.suptitle('Pairplot of Variables', y=1.02)
-    plt.tight_layout()
-    
-    return g
+    plt.suptitle('Pairplot of Numerical Variables', y=1.02)
+    plt.show()
 
-# Example usage:
-# plot_pairplot(df, columns=['Age', 'Income', 'Score'], hue='Category')
-    
+# Usage example: plot_pairplot(df, columns=['Age', 'Income', 'Score'], hue='Category')
