@@ -175,8 +175,50 @@ def plot_correlation_heatmap(df):
     # Display the plot
     plt.show()
 
+# Usage example: plot_custom_correlation_heatmap(df_cleaned)
+
+def plot_pairplot(df, columns=None, hue=None):
+    """
+    Creates a pairplot showing relationships between variables with optional color coding.
+    
+    Parameters:
+    df (pd.DataFrame): DataFrame containing the data
+    columns (list, optional): Columns to include in the plot. Uses numerical columns if None
+    hue (str, optional): Column name for color coding the points
+    """
+    # Select data columns
+    data = df[columns].copy() if columns else df.select_dtypes(include=['number']).copy()
+    
+    # Add hue column if specified
+    if hue:
+        if hue not in df.columns:
+            raise ValueError(f"Hue column '{hue}' not found in DataFrame")
+        
+        # Handle categorical hue with custom colors
+        if df[hue].dtype == 'object' or pd.api.types.is_categorical_dtype(df[hue]):
+            palette = sns.color_palette("husl", len(df[hue].unique()))
+        else:
+            palette = None
+            
+        data[hue] = df[hue]
+    else:
+        palette = None
+    
+    # Create pairplot
+    g = sns.pairplot(
+        data=data,
+        hue=hue,
+        palette=palette,
+        diag_kind='hist',
+        plot_kws={'alpha': 0.5}
+    )
+    
+    # Adjust layout
+    g.fig.suptitle('Pairplot of Variables', y=1.02)
+    plt.tight_layout()
+    
+    return g
+
 # Example usage:
-# plot_custom_correlation_heatmap(df_cleaned)
-
-
+# plot_pairplot(df, columns=['Age', 'Income', 'Score'], hue='Category')
     
