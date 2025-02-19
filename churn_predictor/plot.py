@@ -218,32 +218,19 @@ def plot_pairplot(df, columns=None, hue=None, corner=False):
             palette = sns.color_palette("husl", n_colors)
             
             # Create the pairplot
-            g = sns.pairplot(plot_df, 
-                             hue=hue,
-                           diag_kind='kde',
-                           plot_kws={'alpha': 0.6},
-                            corner = corner,
-                           palette=palette)
+            g = sns.pairplot(plot_df, hue=hue, diag_kind='kde', plot_kws={'alpha': 0.6}, corner = corner, palette=palette)
             
             # Update legend with original category names
             new_labels = [str(cat) for cat in unique_categories]
             legend = g._legend
             for t, label in zip(legend.get_texts(), new_labels):
                 t.set_text(label)
-        
         else:
             # For numerical hue, use default behavior
-            g = sns.pairplot(plot_df,
-                           hue=hue,
-                           diag_kind='kde',
-                             corner = corner,
-                           plot_kws={'alpha': 0.6})
+            g = sns.pairplot(plot_df, hue=hue, diag_kind='kde', corner = corner, plot_kws={'alpha': 0.6})
     else:
         # No hue specified
-        g = sns.pairplot(plot_df,
-                        diag_kind='kde',
-                         corner = corner,
-                        plot_kws={'alpha': 0.6})
+        g = sns.pairplot(plot_df, diag_kind='kde', corner = corner, plot_kws={'alpha': 0.6})
     if hue:
         g.fig.subplots_adjust(right=0.95, top=1)
     
