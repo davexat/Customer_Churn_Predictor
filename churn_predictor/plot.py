@@ -3,6 +3,23 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 
+def summary_cat_var(df, column, gbe=False, sbs=False):
+    df_gb = df.groupby('Exited') if gbe else df
+    df_gb = df_gb[column].value_counts(normalize=True)
+    df_freq = df_gb.reset_index()
+
+    sns.catplot(data=df_freq, 
+                kind='bar', x=column, 
+                y='proportion',
+                palette = {0: '#1f77b4', 1: '#d62728'} if gbe else None,
+                hue = 'Exited' if gbe else None,
+                col = 'Exited' if sbs and gbe else None,
+                col_order = [0,1] if sbs and gbe else None,
+                height=5, aspect=1)
+    
+    plt.show()
+    print(df_gb)
+
 def plot_horizontal_boxplot(df, columns):
     """
     Plot a horizontal boxplot for a specified column in a DataFrame.
