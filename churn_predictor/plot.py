@@ -37,6 +37,9 @@ def summary_num_var(df, column, gbe=False, sbs=False, summ=True, bins=None):
         print(info[column].describe())
 
 def plot_boxplot(df, column, gbe=False, sbs=False):
+    if isinstance(column, list):
+        for col in column: plot_boxplot(df, col, gbe, sbs)
+        return
     sns.catplot(
         data=df, 
         kind='box', x=column,
@@ -50,6 +53,9 @@ def plot_boxplot(df, column, gbe=False, sbs=False):
     plt.show()
 
 def plot_histogram(df, column, gbe=False, sbs=False):
+    if isinstance(column, list):
+        for col in column: plot_histogram(df, col, gbe, sbs)
+        return
     sns.displot(
         data=df,
         kind='hist',
