@@ -75,7 +75,7 @@ def plot_histogram(df, column, gbe=False, sbs=False):
     )
     plt.show()
 
-def plot_correlation_heatmap(df):
+def plot_correlation_heatmap(df, method='pearson'):
     """
     Plot a customized correlation heatmap showing only unique correlations
     based on a non-redundant triangular approach.
@@ -87,7 +87,7 @@ def plot_correlation_heatmap(df):
         None
     """
     # Calculate correlation matrix
-    corr = df.corr()
+    corr = df.corr(method)
 
     # Get the number of columns
     n = len(corr.columns)
@@ -103,7 +103,7 @@ def plot_correlation_heatmap(df):
                 vmin=-1, vmax=1, fmt='.2f', linewidths=0.5, square=True, cbar_kws={"shrink": 0.75})
 
     # Add titles and labels
-    plt.title('Correlation Heatmap')
+    plt.title(f'{method.capitalize()} Correlation Heatmap')
     plt.xlabel('Variables (1 to N-1)')
     plt.ylabel('Variables (N to 2)')
     
