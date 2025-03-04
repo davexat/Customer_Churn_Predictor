@@ -31,6 +31,7 @@ def plot_barplot(df, column, gbe=False, sbs=False):
         aspect=1 if sbs else 2,
         edgecolor='black'
     )
+    plt.title(f"Barplot for {column}")
     plt.show()
     return df_gb
 
@@ -55,6 +56,7 @@ def plot_boxplot(df, column, gbe=False, sbs=False):
         height=2, 
         aspect= 2.5 if sbs else 5
     )
+    plt.title(f"Boxplot for {column}")
     plt.show()
 
 def plot_histogram(df, column, gbe=False, sbs=False):
@@ -76,6 +78,7 @@ def plot_histogram(df, column, gbe=False, sbs=False):
         aspect=1 if sbs else 2,
         edgecolor='black'
     )
+    plt.title(f"Histogram for {column}")
     plt.show()
 
 def plot_correlation_heatmap(df, method='pearson'):
