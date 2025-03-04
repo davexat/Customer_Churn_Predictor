@@ -97,6 +97,16 @@ def analyze_categorical_relationship(df, var1, var2):
     plt.ylabel("Proportion")
     plt.show()
     chi2, p, dof, expected = stats.chi2_contingency(pd.crosstab(df[var1], df[var2]))
+    print(f"Proportional Distribution of {var1} by {var2}:")
     print(crosstab)
     print(f"\nChi-square test between {var1} and {var2}:")
-    print(f"Chi2 = {chi2:.2f}, p-value = {p:.4f}\n")
+    print(f"Chi2 = {chi2:.2f}, p-value = {p:.4f}")
+    print(f"Degrees of freedom = {dof}")
+    print("Expected frequencies under the null hypothesis:")
+    print(expected)
+    if p < 0.05:
+        print(f"\nSince the p-value is less than 0.05, we reject the null hypothesis.")
+        print(f"There is a significant relationship between {var1} and {var2}.")
+    else:
+        print(f"\nSince the p-value is greater than 0.05, we fail to reject the null hypothesis.")
+        print(f"There is no significant relationship between {var1} and {var2}.")
