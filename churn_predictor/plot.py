@@ -10,7 +10,7 @@ def init():
 def summary_num_var(df, column, gbe=False, sbs=False):
     plot_histogram(df, column, gbe, sbs)
     plot_boxplot(df, column, gbe, sbs)
-    info = df.groupby('Exited') if gbe else df
+    info = df.groupby('Exited', observed=False) if gbe else df
     print_skewness_kurtosis(df, column)
     print('--'*20)
     print(info[column].describe())
@@ -74,19 +74,23 @@ def plot_histogram(df, column, gbe=False, sbs=False):
     plt.show()
 
 def summary_cat_var(df, column, gbe=False, sbs=False, summ=True):
-    df_gb = plot_barplot(df, column, gbe, sbs)
-    if summ: print(df_gb)
+    plot_barplot(df, column, gbe, sbs)
+    print_frequency_table(df, column, gbe)
+
+def print_frequency_table(df, column, gbe=False):
+    table = df.loc[:,['Exited', column]] if gbe else df[column]
+    freq_table = table.value_counts().to_frame('AF')
+    freq_table['RF'] = table.value_counts(normalize=True).round(4)
+    print(freq_table)
 
 def plot_barplot(df, column, gbe=False, sbs=False):
     if isinstance(column, list):
         for col in column: plot_barplot(df, col, gbe, sbs)
         return
-    df_gb = df.groupby('Exited') if gbe else df
-    df_gb = df_gb[column].value_counts(normalize=True)
-    df_freq = df_gb.reset_index()
-
+    df = df.groupby('Exited', observed=False) if gbe else df
+    df = df[column].value_counts(normalize=True).reset_index()
     sns.catplot(
-        data=df_freq, 
+        data=df, 
         kind='bar', x=column, 
         y='proportion',
         palette = {0: '#1f77b4', 1: '#d62728'} if gbe else None,
@@ -99,8 +103,6 @@ def plot_barplot(df, column, gbe=False, sbs=False):
     )
     plt.title(f"Barplot for {column}")
     plt.show()
-    return df_gb
-
 
 def plot_correlation_heatmap(df, method='pearson'):
     corr = df.corr(method)
